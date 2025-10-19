@@ -26,10 +26,16 @@ private:
 	void  callback_imu( const  sensor_msgs::msg::Imu::SharedPtr  msg )
 	{
 		sensor_msgs::msg::Imu imu_raw = *msg;	// 受信メッセージをコピー
+		double acc_z = imu_raw.linear_acceleration.z;
 
 		// 指数平均の計算
-		double acc_z = imu_raw.linear_acceleration.z;
-		ema_z = // ここに数式を入れましょう
+		if(!first_time) {
+			ema_z = // ここに数式を入れましょう
+		}
+		else {
+			ema_z = acc_z;
+			first_time = false;
+		}
 
 		// 配信
 		auto imu_filtered = imu_raw;
@@ -47,6 +53,7 @@ private:
 	rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu_;
 	double ALPHA_;
 	double ema_z = 0.0;
+	bool first_time = true;
 };
 
 int main(int argc, char** argv)
