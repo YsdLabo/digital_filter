@@ -18,7 +18,7 @@ public:
 		);
 		// パブリッシャーを作成（/imu_outトピックを配信）
 		pub_imu_ = this->create_publisher<sensor_msgs::msg::Imu> (
-			"/imu_out",
+			"/imu_sma",
 			rclcpp::SensorDataQoS()
 		);
 	}
