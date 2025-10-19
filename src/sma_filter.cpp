@@ -16,7 +16,7 @@ public:
 			rclcpp::SensorDataQoS(),
 			std::bind(&SmaFilter::callback_imu, this, std::placeholders::_1)
 		);
-		// パブリッシャーを作成（/imu_outトピックを配信）
+		// パブリッシャーを作成（/imu_smaトピックを配信）
 		pub_imu_ = this->create_publisher<sensor_msgs::msg::Imu> (
 			"/imu_sma",
 			rclcpp::SensorDataQoS()
@@ -41,14 +41,14 @@ private:
 		sma_z /= (double)NUM_SMA_;		// 平均計算
 
 		// 配信
-		auto imu_mod = imu_raw;
-		imu_mod.linear_acceleration.z = sma_z;
-		pub_imu_->publish(imu_mod);
+		auto imu_filtered = imu_raw;
+		imu_filtered.linear_acceleration.z = sma_z;
+		pub_imu_->publish(imu_filtered);
 
 		// 表示
 		RCLCPP_INFO( this->get_logger( ), "z: %f  sma_z: %f",
 			imu_raw.linear_acceleration.z,
-			imu_mod.linear_acceleration.z
+			imu_filtered.linear_acceleration.z
 		);
 	}
 

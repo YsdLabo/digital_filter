@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="alpha" default="0.1"/>
+  <node pkg="bno055_usb_stick_ros2" exec="bno055_usb_stick_node">
+    <param name="port" value="/dev/ttyBNO055"/>
+  </node>
+  <node pkg="digital_filter" exec="ema_filter_node" output="screen">
+    <param name="alpha" value="$(var alpha)"/>
+  </node>
+</launch>
