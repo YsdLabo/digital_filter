@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="num" default="5"/>
+  <arg name="alpha" default="0.1"/>
+  <arg name="fc" default="10.0"/>
+
+  <node pkg="bno055_usb_stick_ros2" exec="bno055_usb_stick_node">
+    <param name="port" value="/dev/ttyBNO055"/>
+  </node>
+  <node pkg="digital_filter" exec="sma_filter_node" output="screen">
+    <param name="number" value="$(var num)"/>
+  </node>
+  <node pkg="digital_filter" exec="ema_filter_node" output="screen">
+    <param name="alpha" value="$(var alpha)"/>
+  </node>
+  <node pkg="digital_filter" exec="rc_filter_node" output="screen">
+    <param name="fc" value="$(var fc)"/>
+  </node>
+</launch>
