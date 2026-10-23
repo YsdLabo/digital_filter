@@ -6,10 +6,11 @@ class SmaFilter : public rclcpp::Node
 {
 public:
 	// コンストラクタ
-	SmaFilter() : Node("sma_filter_node"),
-		NUM_SMA_(this->declare_parameter<int>("number", 5)), // パラメータ宣言と取得
-		data_(std::make_unique<double[]>(NUM_SMA_))
+	SmaFilter() : Node("sma_filter_node")
 	{
+		num_sma_ = this->declare_parameter<int>("number", 5);    // パラメータ宣言と取得
+		data_.assign(num_sma_, 0.0);   // 初期化
+		
 		// サブスクライバーを作成（/imuトピックを購読）
 		sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu> (
 			"/imu", 
@@ -35,10 +36,10 @@ private:
 
 		// 移動平均の計算
 		double sma_z = 0.0;
-		for(int  i=0; i<NUM_SMA_; i++) {
-			sma_z += data_[i];			// NUM_SMA_個のデータを合計
+		for(int  i = 0; i < num_sma_; i ++) {
+			sma_z += data_[i];			// num_sma_個のデータを合計
 		}
-		sma_z /= (double)NUM_SMA_;		// 平均計算
+		sma_z /= static_cast<double>(num_sma_);		// 平均計算
 
 		// 配信
 		auto imu_filtered = imu_raw;
@@ -54,9 +55,9 @@ private:
 
 	rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr sub_imu_;
 	rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu_;
-	int NUM_SMA_;
+	int num_sma_ = 5;
 	int num_ = 0;
-	std::unique_ptr<double[]> data_;
+	std::vector<double> data_;
 };
 
 int main(int argc, char** argv)
