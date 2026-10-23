@@ -46,7 +46,7 @@ private:
 		pub_imu_->publish(imu_filtered);
 
 		// 表示
-		RCLCPP_INFO( this->get_logger( ), "z: %f  rcf_z: %f",
+		RCLCPP_INFO( this->get_logger( ), "Raw z: %f  RCF z: %f",
 			imu_raw.linear_acceleration.z,
 			imu_filtered.linear_acceleration.z
 		);
