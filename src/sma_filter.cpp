@@ -27,7 +27,7 @@ private:
 	// 購読用コールバック関数
 	void  callback_imu( const  sensor_msgs::msg::Imu::SharedPtr  msg )
 	{
-		const auto& imu_raw = *msg;	// 受信メッセージをコピー
+		const auto& imu_raw = *msg;	// 受信メッセージにconst参照で別名を付ける（コピーゼロ）
 
 		// バッファ内データの更新
 		data_[num_] = imu_raw.linear_acceleration.z;    // 要素番号numに加速度zを記録
