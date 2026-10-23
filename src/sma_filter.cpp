@@ -27,12 +27,12 @@ private:
 	// 購読用コールバック関数
 	void  callback_imu( const  sensor_msgs::msg::Imu::SharedPtr  msg )
 	{
-		sensor_msgs::msg::Imu imu_raw = *msg;	// 受信メッセージをコピー
+		const auto& imu_raw = *msg;	// 受信メッセージをコピー
 
 		// バッファ内データの更新
 		data_[num_] = imu_raw.linear_acceleration.z;    // 要素番号numに加速度zを記録
 		num_++;             // 要素番号の更新
-		if(num_ == NUM_SMA_) num_ = 0;    // 要素番号がデータ点数と同じになったらリセット
+		if(num_ == num_sma_) num_ = 0;    // 要素番号がデータ点数と同じになったらリセット
 
 		// 移動平均の計算
 		double sma_z = 0.0;
@@ -47,7 +47,7 @@ private:
 		pub_imu_->publish(imu_filtered);
 
 		// 表示
-		RCLCPP_INFO( this->get_logger( ), "z: %f  sma_z: %f",
+		RCLCPP_INFO( this->get_logger( ), "Raw z: %f  SMA z: %f",
 			imu_raw.linear_acceleration.z,
 			imu_filtered.linear_acceleration.z
 		);
