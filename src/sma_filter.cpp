@@ -9,7 +9,7 @@ public:
 	SmaFilter() : Node("sma_filter_node")
 	{
 		num_sma_ = this->declare_parameter<int>("number", 5);    // パラメータ宣言と取得
-		data_.assign(num_sma_, 0.0);   // 初期化
+		data_.assign(num_sma_, 0.0);   // vector配列の初期化
 		
 		// サブスクライバーを作成（/imuトピックを購読）
 		sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu> (
@@ -42,7 +42,7 @@ private:
 		sma_z /= static_cast<double>(num_sma_);		// 平均計算
 
 		// 配信
-		auto imu_filtered = imu_raw;
+		auto imu_filtered = imu_raw;    // 受信メッセージをディープコピー
 		imu_filtered.linear_acceleration.z = sma_z;
 		pub_imu_->publish(imu_filtered);
 
