@@ -7,7 +7,7 @@ class EmaFilter : public rclcpp::Node
 public:
 	// コンストラクタ
 	EmaFilter() : Node("ema_filter_node"),
-		ALPHA_(this->declare_parameter<double>("alpha", 0.1))  // パラメータ宣言と取得
+		alpha_(this->declare_parameter<double>("alpha", 0.1))  // パラメータ宣言と取得
 	{
 		// サブスクライバーを作成（/imuトピックを購読）
 		sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu> (
@@ -25,7 +25,7 @@ private:
 	// 購読用コールバック関数
 	void  callback_imu( const  sensor_msgs::msg::Imu::SharedPtr  msg )
 	{
-		sensor_msgs::msg::Imu imu_raw = *msg;	// 受信メッセージをコピー
+		const auto& imu_raw = *msg;	// 受信メッセージをコピー
 		double acc_z = imu_raw.linear_acceleration.z;
 
 		// 指数平均の計算
@@ -43,7 +43,7 @@ private:
 		pub_imu_->publish(imu_filtered);
 
 		// 表示
-		RCLCPP_INFO( this->get_logger( ), "z: %f  ema_z: %f",
+		RCLCPP_INFO( this->get_logger( ), "Raw z: %f  EMA z: %f",
 			imu_raw.linear_acceleration.z,
 			imu_filtered.linear_acceleration.z
 		);
@@ -51,7 +51,7 @@ private:
 
 	rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr sub_imu_;
 	rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr pub_imu_;
-	double ALPHA_;
+	double alpha_;
 	double ema_z = 0.0;
 	bool first_time = true;
 };
