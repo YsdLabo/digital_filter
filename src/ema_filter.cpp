@@ -25,7 +25,7 @@ private:
 	// 購読用コールバック関数
 	void  callback_imu( const  sensor_msgs::msg::Imu::SharedPtr  msg )
 	{
-		const auto& imu_raw = *msg;	// 受信メッセージをコピー
+		const auto& imu_raw = *msg;	// 受信メッセージにconst参照で別名を付ける（コピーゼロ）
 		double acc_z = imu_raw.linear_acceleration.z;
 
 		// 指数平均の計算
